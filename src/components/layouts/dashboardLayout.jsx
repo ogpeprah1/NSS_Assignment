@@ -73,7 +73,7 @@ function DashboardLayout({ children, pageName }) {
           ))}
         </div>
         {showMenu && (
-          <div className="mt-[70px] bg-white md:bg-transparent absolute md:relative p-5 md:p-0 top-0 h-fit md:h-fit rounded-lg shadow-lg md:shadow-none md:block md:mt-5">
+          <div className="mt-[70px] bg-white absolute p-5 top-0 h-fit  rounded-lg shadow-lg md:hidden">
             {DashboardLinks.map((Link) => (
               <MenuItem
                 key={Link.name}
