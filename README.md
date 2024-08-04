@@ -1,70 +1,109 @@
-# Getting Started with Create React App
+**Setting Up and Running the Application**
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+**Prerequisites**
+Ensure you have the following installed on your machine:
 
-## Available Scripts
+Node.js (v14 or later)
+npm (v6 or later) or yarn
 
-In the project directory, you can run:
+**Installation**
+Clone the Repository
 
-### `npm start`
+**Install necessary dependencies**
+npm install
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+**Running the Application**
+Start the Development Server
+Using npm:
+npm start
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
 
-### `npm test`
+**login**
+Email - example@gmail.com
+password - 123456789
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+**Structure of Redux Slices**
 
-### `npm run build`
+Overview
+Redux slices are a way to modularize your Redux state management by grouping together related state and actions. Each slice contains:
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+Initial state
+Reducers for updating state
+Asynchronous actions (thunks) for handling side effects
+Example: userSlice
+Structure
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+State: The initial state of the user slice, containing loading, user, and error.
+Async Thunks: Asynchronous actions using createAsyncThunk to handle side effects such as API requests.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
+Reducers: Functions to handle state changes based on dispatched actions.
 
-### `npm run eject`
 
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
+import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
+import { BASE_URL } from "../utils/constants";
 
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
+// Async thunk for logging in a user
+export const loginUser = createAsyncThunk(
+  "user/loginUser",
+  async (userCredentials) => {
+    const req = await axios.post(`${BASE_URL}/api/signin`, userCredentials);
+    const res = req.data["data"];
+    console.log(res);
+    localStorage.setItem("user", JSON.stringify(res));
+    return res;
+  }
+);
 
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
+// User slice definition
+const userSlice = createSlice({
+  name: "user",
+  initialState: {
+    loading: false,
+    user: null,
+    error: null,
+  },
+  extraReducers: (builder) => {
+    builder
+      .addCase(loginUser.pending, (state) => {
+        state.loading = true;
+        state.user = null;
+        state.error = null;
+      })
+      .addCase(loginUser.fulfilled, (state, action) => {
+        state.loading = false;
+        state.user = action.payload;
+        state.error = null;
+      })
+      .addCase(loginUser.rejected, (state, action) => {
+        state.loading = false;
+        state.user = null;
+        console.log(action.error.message);
+        if (action.error.message === "Request failed with status code 401") {
+          state.error = "Access Denied! Invalid Credentials";
+        } else {
+          state.error = action.error.message;
+        }
+      });
+  },
+});
 
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
+export default userSlice.reducer;
 
-## Learn More
+**Usage in the Application**
 
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
+Store Setup: Combine slices into a root reducer and configure the store.
 
-To learn React, check out the [React documentation](https://reactjs.org/).
+import { configureStore } from "@reduxjs/toolkit";
+import userReducer from "./slices/userSlice";
 
-### Code Splitting
+const store = configureStore({
+  reducer: {
+    user: userReducer,
+  },
+});
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
+Provider Setup: Wrap your application with the Provider component to make the Redux store available to your components.
 
-### Analyzing the Bundle Size
 
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+Dispatching Actions: Use useDispatch and useSelector hooks in your components to dispatch actions and access state.
