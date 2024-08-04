@@ -3,11 +3,12 @@ import React from "react";
 
 function AlertComponent({ show, onHide, onConfirm }) {
   return (
-    <div className="bg-gray-600 opacity-70 w-screen h-screen absolute">
+    <div className="bg-gray-600 opacity-80 w-screen h-screen absolute flex items-center justify-center">
+      
       <div
-        className={`bg-white shadow-md py-10 px-[100px] rounded-lg ${
+        className={`bg-white  shadow-md py-10 px-[100px] rounded-lg ${
           show ? "block" : "hidden"
-        } absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2`}
+        }`}
       >
         <h2 className="text-lg font-bold">Confirm Logout</h2>
         <p className="text-sm mb-4">Are you sure you want to log out?</p>
