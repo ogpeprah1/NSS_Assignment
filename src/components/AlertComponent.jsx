@@ -3,10 +3,10 @@ import React from "react";
 
 function AlertComponent({ show, onHide, onConfirm }) {
   return (
-    <div className="bg-gray-600 opacity-80 w-screen h-screen absolute flex items-center justify-center">
+    <div className="bg-gray-600 opacity-90 w-screen h-screen absolute flex items-center justify-center p-4">
       
       <div
-        className={`bg-white  shadow-md py-10 px-[100px] rounded-lg ${
+        className={`bg-white  shadow-md py-5 md:py-10 px-7 md:px-[100px] rounded-lg w-full ${
           show ? "block" : "hidden"
         }`}
       >

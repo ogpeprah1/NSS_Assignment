@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import MenuItem from "../menuItem";
 import { FiSidebar } from "react-icons/fi";
 import { DashboardLinks } from "../../utils/constants";
 import { useNavigate } from "react-router-dom";
 import AlertComponent from "../AlertComponent";
 import { BiLogOut } from "react-icons/bi";
+import { useSelector } from "react-redux";
 
 function getUser() {
   let user = localStorage.getItem("user");
@@ -42,6 +43,11 @@ function DashboardLayout({ children, pageName }) {
   const handleDropMenu = (e) => {
     setShowMenu(!showMenu);
   };
+
+  useEffect(() => {
+    console.log("User state updated:", user);
+  }, [user]);
+
   return (
     <div className="flex flex-col md:flex-row gap-3 justify-center items-center w-full">
       {showAlert && (

@@ -61,7 +61,7 @@ function LoginPage() {
   };
 
   return (
-    <div className="flex flex-col h-screen w-screen md:flex-row gap-3 justify-center items-center bg-white shadow-md p-5 m-3 rounded-lg">
+    <div className="flex flex-col h-screen w-screen md:flex-row gap-3 justify-center items-center bg-white shadow-md p-5 m-0 md:m-3 rounded-lg">
       <div
         className="w-[100%] md:w-[660px] h-full bg-blue-950 rounded-md"
         style={{
